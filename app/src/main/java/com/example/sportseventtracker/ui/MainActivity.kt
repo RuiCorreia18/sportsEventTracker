@@ -7,8 +7,10 @@ import androidx.lifecycle.lifecycleScope
 import com.example.sportseventtracker.R
 import com.example.sportseventtracker.databinding.ActivityMainBinding
 import com.example.sportseventtracker.ui.adapter.SportsAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainActivityViewModel by viewModels()

@@ -1,10 +1,16 @@
 package com.example.sportseventtracker.ui
 
 import androidx.lifecycle.ViewModel
+import com.example.sportseventtracker.domain.SportsRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class MainActivityViewModel: ViewModel() {
+@HiltViewModel
+class MainActivityViewModel @Inject constructor(
+    private val repository: SportsRepository
+): ViewModel() {
     private val _sports = MutableStateFlow(generateDummySports())
     val sports: StateFlow<List<SportsUiModel>> = _sports
 
