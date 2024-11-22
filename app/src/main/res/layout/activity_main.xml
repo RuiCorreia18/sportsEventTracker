@@ -15,6 +15,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/sport_section_layout"/>
+        tools:listitem="@layout/sport_item"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

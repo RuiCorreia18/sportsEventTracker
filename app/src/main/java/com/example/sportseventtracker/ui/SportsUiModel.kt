@@ -3,8 +3,8 @@ package com.example.sportseventtracker.ui
 data class SportsUiModel(
     val sportId: String,
     val sportName: String,
-    val matches: List<MatchUiModel>,
     val isFavourite: Boolean,
+    val matches: List<MatchUiModel>,
 )
 
 data class MatchUiModel(

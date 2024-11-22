@@ -2,8 +2,10 @@ package com.example.sportseventtracker.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sportseventtracker.R
 import com.example.sportseventtracker.databinding.MatchItemBinding
 import com.example.sportseventtracker.ui.MatchUiModel
 
@@ -41,6 +43,10 @@ class MatchesAdapter: RecyclerView.Adapter<MatchesAdapter.VH>() {
                 countdownTimer.text = match.timeLeft
                 competitorOneTV.text = match.competitor1
                 competitorTwoTV.text = match.competitor2
+                favoriteIcon.setOnClickListener {
+                    //TODO on click change favourite and color
+                    favoriteIcon.setColorFilter(ContextCompat.getColor(favoriteIcon.context, R.color.yellow))
+                }
             }
         }
     }

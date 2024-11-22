@@ -20,7 +20,7 @@
         android:id="@+id/favoriteIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/star_icon" />
+        android:src="@drawable/star_icon"/>
 
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/red"
-        tools:text="vs" />
+        android:text="vs" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/competitorTwoTV"
