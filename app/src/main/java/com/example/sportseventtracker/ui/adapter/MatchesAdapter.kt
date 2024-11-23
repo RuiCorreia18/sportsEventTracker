@@ -9,7 +9,7 @@ import com.example.sportseventtracker.R
 import com.example.sportseventtracker.databinding.MatchItemBinding
 import com.example.sportseventtracker.ui.MatchUiModel
 
-class MatchesAdapter: RecyclerView.Adapter<MatchesAdapter.VH>() {
+class MatchesAdapter : RecyclerView.Adapter<MatchesAdapter.VH>() {
 
     private val matchesList = mutableListOf<MatchUiModel>()
 
@@ -45,7 +45,12 @@ class MatchesAdapter: RecyclerView.Adapter<MatchesAdapter.VH>() {
                 competitorTwoTV.text = match.competitor2
                 favoriteIcon.setOnClickListener {
                     //TODO on click change favourite and color
-                    favoriteIcon.setColorFilter(ContextCompat.getColor(favoriteIcon.context, R.color.yellow))
+                    favoriteIcon.setColorFilter(
+                        ContextCompat.getColor(
+                            favoriteIcon.context,
+                            R.color.yellow
+                        )
+                    )
                 }
             }
         }

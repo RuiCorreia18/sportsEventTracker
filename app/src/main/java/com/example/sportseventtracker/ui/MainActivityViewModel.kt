@@ -2,6 +2,7 @@ package com.example.sportseventtracker.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sportseventtracker.Utils.calculateTimeLeft
 import com.example.sportseventtracker.domain.GetSportsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -9,14 +10,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val getSportsUseCase: GetSportsUseCase,
     private val ioDispatcher: CoroutineDispatcher,
-): ViewModel() {
+) : ViewModel() {
     private val _sports = MutableStateFlow<List<SportUiModel>>(emptyList())
     val sports: StateFlow<List<SportUiModel>> = _sports
 
@@ -56,22 +56,4 @@ class MainActivityViewModel @Inject constructor(
             }
         }
     }
-
-    private fun calculateTimeLeft(matchStartTime: Long): String {
-        val timeLeftMillis = matchStartTime - System.currentTimeMillis()
-        return if (timeLeftMillis > 0) {
-            formatMillisToHHMMSS(timeLeftMillis)
-        } else {
-            "00:00:00"
-        }
-    }
-
-    private fun formatMillisToHHMMSS(millis: Long): String {
-        val hours = TimeUnit.MILLISECONDS.toHours(millis)
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60
-
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
-    }
-
 }

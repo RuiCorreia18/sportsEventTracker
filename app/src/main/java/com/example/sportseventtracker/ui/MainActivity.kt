@@ -29,7 +29,10 @@ class MainActivity : AppCompatActivity() {
 
         _binding = ActivityMainBinding.bind(findViewById(R.id.main))
 
-        binding.sportsRecyclerView.adapter = sportsAdapter
+        binding.sportsRecyclerView.apply {
+            adapter = sportsAdapter
+            itemAnimator = null
+        }
 
         lifecycleScope.launch {
             viewModel.sports.collect { sports ->
