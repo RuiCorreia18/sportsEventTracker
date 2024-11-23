@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sportseventtracker.Utils.calculateTimeLeft
 import com.example.sportseventtracker.domain.GetSportsUseCase
+import com.example.sportseventtracker.ui.mapper.toUiModel
+import com.example.sportseventtracker.ui.model.MatchUiModel
+import com.example.sportseventtracker.ui.model.SportUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
@@ -29,7 +32,7 @@ class MainActivityViewModel @Inject constructor(
             try {
                 val sports = getSportsUseCase.execute()
 
-                _sports.value = sports.map { it.toUiModel() }
+                _sports.value = sports.map { it.toUiModel() }.filter { it.matches.isNotEmpty() }
                 startCountdownUpdater()
 
             } catch (e: Exception) {
@@ -53,6 +56,30 @@ class MainActivityViewModel @Inject constructor(
                     }
                 }
                 delay(1000) // Update every second
+            }
+        }
+    }
+
+    fun setMatchFavourite(match: MatchUiModel) {
+        _sports.value = _sports.value.map { sport ->
+            sport.copy(
+                matches = sport.matches.map { currentMatch ->
+                    if (currentMatch.matchId == match.matchId) {
+                        currentMatch.copy(isFavourite = match.isFavourite)
+                    } else {
+                        currentMatch
+                    }
+                }
+            )
+        }
+    }
+
+    fun filterSports(sportUiModel: SportUiModel) {
+        _sports.value = _sports.value.map { sport ->
+            if (sportUiModel.sportId == sport.sportId) {
+                sport.copy(showFavoritesOnly = sportUiModel.showFavoritesOnly)
+            } else {
+                sport
             }
         }
     }

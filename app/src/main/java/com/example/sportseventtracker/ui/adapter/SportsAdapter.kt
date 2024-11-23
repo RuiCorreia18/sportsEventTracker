@@ -7,9 +7,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sportseventtracker.databinding.SportItemBinding
-import com.example.sportseventtracker.ui.SportUiModel
+import com.example.sportseventtracker.ui.model.MatchUiModel
+import com.example.sportseventtracker.ui.model.SportUiModel
 
-class SportsAdapter : RecyclerView.Adapter<SportsAdapter.VH>() {
+class SportsAdapter(
+    private val onMatchFavoriteClick: (MatchUiModel) -> Unit,
+    private val filterFavourite: (SportUiModel) -> Unit,
+) : RecyclerView.Adapter<SportsAdapter.VH>() {
 
     private val sportsList = mutableListOf<SportUiModel>()
 
@@ -39,7 +43,7 @@ class SportsAdapter : RecyclerView.Adapter<SportsAdapter.VH>() {
 
     inner class VH(private val binding: SportItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        private val matchesAdapter = MatchesAdapter()
+        private val matchesAdapter = MatchesAdapter(onMatchFavoriteClick)
 
         fun bind(sport: SportUiModel) {
             with(binding) {
@@ -47,16 +51,26 @@ class SportsAdapter : RecyclerView.Adapter<SportsAdapter.VH>() {
 
                 matchesRecyclerView.apply {
                     adapter = matchesAdapter
-                    layoutManager = GridLayoutManager(root.context, 4)
+                    layoutManager = GridLayoutManager(root.context, 3)
                 }
 
-                matchesAdapter.setItems(sport.matches)
+                val matchsToShow = if(sport.showFavoritesOnly){
+                    sport.matches.filter { it.isFavourite }
+                }else{
+                    sport.matches
+                }
+                matchesAdapter.setItems(matchsToShow)
 
                 showMatchsIcon.setOnClickListener {
                     matchesRecyclerView.visibility =
                         if (matchesRecyclerView.visibility == View.GONE) View.VISIBLE else View.GONE
                     showMatchsIcon.rotation += 180
                 }
+
+                favouriteSportSwitch.setOnCheckedChangeListener { _, isChecked ->
+                    filterFavourite(sport.copy(showFavoritesOnly = isChecked))
+                }
+
             }
         }
     }

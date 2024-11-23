@@ -7,9 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sportseventtracker.R
 import com.example.sportseventtracker.databinding.MatchItemBinding
-import com.example.sportseventtracker.ui.MatchUiModel
+import com.example.sportseventtracker.ui.model.MatchUiModel
 
-class MatchesAdapter : RecyclerView.Adapter<MatchesAdapter.VH>() {
+class MatchesAdapter(
+    private val onFavoriteClick: (MatchUiModel) -> Unit
+) : RecyclerView.Adapter<MatchesAdapter.VH>() {
 
     private val matchesList = mutableListOf<MatchUiModel>()
 
@@ -43,14 +45,23 @@ class MatchesAdapter : RecyclerView.Adapter<MatchesAdapter.VH>() {
                 countdownTimer.text = match.timeLeft
                 competitorOneTV.text = match.competitor1
                 competitorTwoTV.text = match.competitor2
-                favoriteIcon.setOnClickListener {
-                    //TODO on click change favourite and color
-                    favoriteIcon.setColorFilter(
-                        ContextCompat.getColor(
-                            favoriteIcon.context,
-                            R.color.yellow
-                        )
+                val favouriteColor = if (match.isFavourite) {
+                    ContextCompat.getColor(
+                        favoriteIcon.context,
+                        R.color.yellow
                     )
+                } else {
+                    ContextCompat.getColor(
+                        favoriteIcon.context,
+                        R.color.white
+                    )
+                }
+
+                favoriteIcon.setColorFilter(favouriteColor)
+
+                favoriteIcon.setOnClickListener {
+                    val updatedMatch = match.copy(isFavourite = !match.isFavourite)
+                    onFavoriteClick(updatedMatch)
                 }
             }
         }

@@ -1,14 +1,16 @@
-package com.example.sportseventtracker.ui
+package com.example.sportseventtracker.ui.mapper
 
 import com.example.sportseventtracker.domain.MatchDomainModel
 import com.example.sportseventtracker.domain.SportDomainModel
+import com.example.sportseventtracker.ui.model.MatchUiModel
+import com.example.sportseventtracker.ui.model.SportUiModel
 
 
 fun SportDomainModel.toUiModel() =
     SportUiModel(
+        sportId = this.sportId,
         sportName = this.sportName,
         matches = this.matchesList.map { it.toUiModel() }
-
     )
 
 fun MatchDomainModel.toUiModel(): MatchUiModel {
