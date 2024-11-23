@@ -10,6 +10,8 @@ import com.example.sportseventtracker.databinding.SportItemBinding
 import com.example.sportseventtracker.ui.model.MatchUiModel
 import com.example.sportseventtracker.ui.model.SportUiModel
 
+private const val ROTATE_ANGLE = 180
+
 class SportsAdapter(
     private val onMatchFavoriteClick: (MatchUiModel) -> Unit,
     private val filterFavourite: (SportUiModel) -> Unit,
@@ -64,7 +66,7 @@ class SportsAdapter(
                 showMatchsIcon.setOnClickListener {
                     matchesRecyclerView.visibility =
                         if (matchesRecyclerView.visibility == View.GONE) View.VISIBLE else View.GONE
-                    showMatchsIcon.rotation += 180
+                    showMatchsIcon.rotation += ROTATE_ANGLE
                 }
 
                 favouriteSportSwitch.setOnCheckedChangeListener { _, isChecked ->

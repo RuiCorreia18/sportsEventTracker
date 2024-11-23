@@ -2,7 +2,7 @@ package com.example.sportseventtracker.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.sportseventtracker.Utils.calculateTimeLeft
+import com.example.sportseventtracker.utils.calculateTimeLeft
 import com.example.sportseventtracker.domain.GetSportsUseCase
 import com.example.sportseventtracker.ui.mapper.toUiModel
 import com.example.sportseventtracker.ui.model.MatchUiModel
@@ -15,10 +15,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+const val SECOND_IN_MILLIS = 1000L
+
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val getSportsUseCase: GetSportsUseCase,
-    private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val _sports = MutableStateFlow<List<SportUiModel>>(emptyList())
     val sports: StateFlow<List<SportUiModel>> = _sports
@@ -28,11 +29,11 @@ class MainActivityViewModel @Inject constructor(
     }
 
     private fun loadSportsData() {
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             try {
-                val sports = getSportsUseCase.execute()
+                val sports = getSportsUseCase()
 
-                _sports.value = sports.map { it.toUiModel() }.filter { it.matches.isNotEmpty() }
+                _sports.value = sports.map { it.toUiModel() }
                 startCountdownUpdater()
 
             } catch (e: Exception) {
@@ -55,7 +56,7 @@ class MainActivityViewModel @Inject constructor(
                         )
                     }
                 }
-                delay(1000) // Update every second
+                delay(SECOND_IN_MILLIS) // Update every second
             }
         }
     }

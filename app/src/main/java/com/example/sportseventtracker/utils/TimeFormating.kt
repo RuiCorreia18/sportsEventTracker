@@ -1,6 +1,8 @@
-package com.example.sportseventtracker.Utils
+package com.example.sportseventtracker.utils
 
 import java.util.concurrent.TimeUnit
+
+private const val TO_MINUTES_AND_SECONDS = 60
 
 fun calculateTimeLeft(matchStartTime: Long): String {
     val timeLeftMillis = matchStartTime - System.currentTimeMillis()
@@ -13,8 +15,8 @@ fun calculateTimeLeft(matchStartTime: Long): String {
 
 fun formatMillisToHHMMSS(millis: Long): String {
     val hours = TimeUnit.MILLISECONDS.toHours(millis)
-    val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60
-    val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % TO_MINUTES_AND_SECONDS
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % TO_MINUTES_AND_SECONDS
 
     return String.format("%02d:%02d:%02d", hours, minutes, seconds)
 }
