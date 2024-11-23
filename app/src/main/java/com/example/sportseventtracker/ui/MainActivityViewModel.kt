@@ -1,44 +1,77 @@
 package com.example.sportseventtracker.ui
 
 import androidx.lifecycle.ViewModel
-import com.example.sportseventtracker.domain.SportsRepository
+import androidx.lifecycle.viewModelScope
+import com.example.sportseventtracker.domain.GetSportsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val repository: SportsRepository
+    private val getSportsUseCase: GetSportsUseCase,
+    private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel() {
-    private val _sports = MutableStateFlow(generateDummySports())
-    val sports: StateFlow<List<SportsUiModel>> = _sports
+    private val _sports = MutableStateFlow<List<SportUiModel>>(emptyList())
+    val sports: StateFlow<List<SportUiModel>> = _sports
 
     init {
         loadSportsData()
     }
 
     private fun loadSportsData() {
-        val dummySports = generateDummySports()
-        _sports.value = dummySports
-    }
+        viewModelScope.launch(ioDispatcher) {
+            try {
+                val sports = getSportsUseCase.execute()
 
-    private fun generateDummySports(): List<SportsUiModel> {
-        return List(5) { sportIndex ->
-            SportsUiModel(
-                sportId = "Id $sportIndex",
-                sportName = "Sport $sportIndex",
-                isFavourite = false,
-                matches = List(4) { matchIndex ->
-                    MatchUiModel(
-                        matchId = matchIndex.toString(),
-                        timeLeft = "00:11:22",
-                        competitor1 = "Cpmpetitor 1",
-                        competitor2 = "Cpmpetitor 2",
-                        isFavourite = false
-                    )
-                },
-            )
+                _sports.value = sports.map { it.toUiModel() }
+                startCountdownUpdater()
+
+            } catch (e: Exception) {
+                _sports.value = emptyList() // Clear the list or update with error state
+            }
         }
     }
+
+    private fun startCountdownUpdater() {
+        viewModelScope.launch {
+            while (true) {
+                if (_sports.value.isNotEmpty()) {
+                    _sports.value = _sports.value.map { sport ->
+                        sport.copy(
+                            matches = sport.matches.map { match ->
+                                match.copy(
+                                    timeLeft = calculateTimeLeft(match.matchStartTime)
+                                )
+                            }
+                        )
+                    }
+                }
+                delay(1000) // Update every second
+            }
+        }
+    }
+
+    private fun calculateTimeLeft(matchStartTime: Long): String {
+        val timeLeftMillis = matchStartTime - System.currentTimeMillis()
+        return if (timeLeftMillis > 0) {
+            formatMillisToHHMMSS(timeLeftMillis)
+        } else {
+            "00:00:00"
+        }
+    }
+
+    private fun formatMillisToHHMMSS(millis: Long): String {
+        val hours = TimeUnit.MILLISECONDS.toHours(millis)
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % 60
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+
 }

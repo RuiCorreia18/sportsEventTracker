@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sportseventtracker.databinding.SportItemBinding
-import com.example.sportseventtracker.ui.SportsUiModel
+import com.example.sportseventtracker.ui.SportUiModel
 
 class SportsAdapter : RecyclerView.Adapter<SportsAdapter.VH>() {
 
-    private val sportsList = mutableListOf<SportsUiModel>()
+    private val sportsList = mutableListOf<SportUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return VH(SportItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -23,11 +23,11 @@ class SportsAdapter : RecyclerView.Adapter<SportsAdapter.VH>() {
 
     override fun getItemCount(): Int = sportsList.size
 
-    fun setItems(sports: List<SportsUiModel>) {
+    fun setItems(sports: List<SportUiModel>) {
         updateItems(sports)
     }
 
-    private fun updateItems(newItems: List<SportsUiModel>) {
+    private fun updateItems(newItems: List<SportUiModel>) {
         val diffCallback = SportsDiffCallback(sportsList, newItems)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
 
@@ -41,10 +41,9 @@ class SportsAdapter : RecyclerView.Adapter<SportsAdapter.VH>() {
 
         private val matchesAdapter = MatchesAdapter()
 
-        fun bind(sport: SportsUiModel) {
+        fun bind(sport: SportUiModel) {
             with(binding) {
                 sportName.text = sport.sportName
-                favouriteSportSwitch.isChecked = sport.isFavourite
 
                 matchesRecyclerView.apply {
                     adapter = matchesAdapter
@@ -64,8 +63,8 @@ class SportsAdapter : RecyclerView.Adapter<SportsAdapter.VH>() {
 }
 
 class SportsDiffCallback(
-    private val oldList: List<SportsUiModel>,
-    private val newList: List<SportsUiModel>
+    private val oldList: List<SportUiModel>,
+    private val newList: List<SportUiModel>
 ) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = oldList.size

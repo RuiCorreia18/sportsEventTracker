@@ -1,5 +1,5 @@
 package com.example.sportseventtracker.domain
 
 interface SportsRepository {
-    suspend fun getSports()
+    suspend fun getSports(): List<SportDomainModel>
 }
