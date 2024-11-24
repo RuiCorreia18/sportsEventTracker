@@ -13,6 +13,7 @@ import com.example.sportseventtracker.utils.StringProvider
 import com.example.sportseventtracker.utils.calculateTimeLeft
 import com.example.sportseventtracker.utils.formatTimeLeft
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +31,8 @@ class MainActivityViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
 
+    private var countdownJob: Job? = null
+
     init {
         loadSportsData()
     }
@@ -41,7 +44,6 @@ class MainActivityViewModel @Inject constructor(
 
                 if (sports.isNotEmpty()) {
                     _uiState.value = UiState.Success(sports)
-                    startCountdownUpdater()
                 }
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(
@@ -53,8 +55,10 @@ class MainActivityViewModel @Inject constructor(
         }
     }
 
-    private fun startCountdownUpdater() {
-        viewModelScope.launch {
+    fun startCountdownUpdater() {
+        if (countdownJob?.isActive == true) return
+
+        countdownJob = viewModelScope.launch {
             while (true) {
                 if (uiState.value is UiState.Success) {
                     val sports = (uiState.value as UiState.Success).sports

@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
                 when (state) {
                     is UiState.Success -> {
                         sportsAdapter.setItems(state.sports)
+                        viewModel.startCountdownUpdater()
 
                         binding.loading.visibility = View.GONE
                         binding.sportsRecyclerView.visibility = View.VISIBLE
