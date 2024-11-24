@@ -10,6 +10,7 @@ import com.example.sportseventtracker.ui.model.SportUiModel
 import com.example.sportseventtracker.ui.model.UiState
 import com.example.sportseventtracker.utils.StringProvider
 import com.example.sportseventtracker.utils.calculateTimeLeft
+import com.example.sportseventtracker.utils.formatTimeLeft
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -58,12 +59,17 @@ class MainActivityViewModel @Inject constructor(
                     val updatedSports = sports.map { sport ->
                         sport.copy(
                             matches = sport.matches.map { match ->
-                                match.copy(
-                                    timeLeft = calculateTimeLeft(
-                                        match.matchStartTime,
-                                        stringProvider
+                                val timeLeftMillis = calculateTimeLeft(match.matchStartTime)
+                                if (timeLeftMillis >= 0) {
+                                    match.copy(
+                                        timeLeft = formatTimeLeft(
+                                            timeLeftMillis,
+                                            stringProvider
+                                        )
                                     )
-                                )
+                                } else {
+                                    match
+                                }
                             }
                         )
                     }
