@@ -1,8 +1,12 @@
 package com.example.sportseventtracker.di
 
+import android.app.Application
 import android.content.Context
+import androidx.room.Room
 import com.example.sportseventtracker.data.SportsApi
 import com.example.sportseventtracker.data.SportsRepositoryImpl
+import com.example.sportseventtracker.data.local.FavoriteDao
+import com.example.sportseventtracker.data.local.FavoriteDatabase
 import com.example.sportseventtracker.domain.SportsRepository
 import com.example.sportseventtracker.utils.StringProvider
 import dagger.Module
@@ -35,13 +39,28 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSportsRepository(api: SportsApi): SportsRepository {
-        return SportsRepositoryImpl(api)
+    fun provideSportsRepository(api: SportsApi, dao: FavoriteDao): SportsRepository {
+        return SportsRepositoryImpl(api, dao)
     }
 
     @Provides
     @Singleton
     fun provideStringProvider(@ApplicationContext context: Context?): StringProvider {
         return StringProvider(context!!)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFavoriteDatabase(application: Application): FavoriteDatabase {
+        return Room.databaseBuilder(
+            application.applicationContext,
+            FavoriteDatabase::class.java,
+            "favorite-database"
+        ).build()
+    }
+
+    @Provides
+    fun provideFavoriteDao(appDatabase: FavoriteDatabase): FavoriteDao {
+        return appDatabase.favoriteDao()
     }
 }

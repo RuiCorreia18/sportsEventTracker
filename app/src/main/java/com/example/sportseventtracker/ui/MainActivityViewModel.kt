@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sportseventtracker.R
 import com.example.sportseventtracker.domain.GetSportsUseCase
+import com.example.sportseventtracker.domain.SportsRepository
 import com.example.sportseventtracker.ui.mapper.toUiModel
 import com.example.sportseventtracker.ui.model.MatchUiModel
 import com.example.sportseventtracker.ui.model.SportUiModel
@@ -24,6 +25,7 @@ const val SECOND_IN_MILLIS = 1000L
 class MainActivityViewModel @Inject constructor(
     private val getSportsUseCase: GetSportsUseCase,
     private val stringProvider: StringProvider,
+    private val repository: SportsRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
@@ -86,6 +88,12 @@ class MainActivityViewModel @Inject constructor(
             sport.copy(
                 matches = sport.matches.map { currentMatch ->
                     if (currentMatch.matchId == match.matchId) {
+                        updateFavouriteInDatabase(
+                            sportId = sport.sportId,
+                            matchId = match.matchId,
+                            isFavourite = match.isFavourite
+                        )
+
                         currentMatch.copy(isFavourite = match.isFavourite)
                     } else {
                         currentMatch
@@ -106,5 +114,11 @@ class MainActivityViewModel @Inject constructor(
             }
         }
         _uiState.value = UiState.Success(updatedSports)
+    }
+
+    private fun updateFavouriteInDatabase(sportId: String, matchId: String, isFavourite: Boolean) {
+        viewModelScope.launch {
+            repository.updateFavouriteInDb(sportId, matchId, isFavourite)
+        }
     }
 }
