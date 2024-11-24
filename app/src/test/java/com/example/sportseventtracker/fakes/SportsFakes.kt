@@ -2,6 +2,8 @@ package com.example.sportseventtracker.fakes
 
 import com.example.sportseventtracker.domain.MatchDomainModel
 import com.example.sportseventtracker.domain.SportDomainModel
+import com.example.sportseventtracker.ui.model.MatchUiModel
+import com.example.sportseventtracker.ui.model.SportUiModel
 
 object SportsFakes {
 
@@ -22,6 +24,31 @@ object SportsFakes {
                 isFavourite = true
             ),
         )
+    )
+
+    val mockSportUiModel1 = SportUiModel(
+        sportId = "sport_1",
+        sportName = "Soccer",
+        showFavoritesOnly = false,
+        matches = listOf(
+            MatchUiModel(
+                matchId = "match_1_2",
+                timeLeft = "",
+                matchStartTime = 1921769591000,
+                competitor1 = "Team C",
+                competitor2 = "Team D",
+                isFavourite = false
+            ),
+            MatchUiModel(
+                matchId = "match_1_1",
+                timeLeft = "",
+                matchStartTime = 1921769590000,
+                competitor1 = "Team A",
+                competitor2 = "Team B",
+                isFavourite = true
+            ),
+        )
+
     )
 
     val mockSportDomainModel2 = SportDomainModel(

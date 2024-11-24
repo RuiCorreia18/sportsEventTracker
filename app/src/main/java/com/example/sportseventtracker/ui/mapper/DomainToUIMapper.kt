@@ -5,7 +5,6 @@ import com.example.sportseventtracker.domain.SportDomainModel
 import com.example.sportseventtracker.ui.model.MatchUiModel
 import com.example.sportseventtracker.ui.model.SportUiModel
 
-
 fun SportDomainModel.toUiModel() =
     SportUiModel(
         sportId = this.sportId,
@@ -24,5 +23,4 @@ fun MatchDomainModel.toUiModel(): MatchUiModel {
         competitor2 = competitors[1].trim(),
         isFavourite = this.isFavourite
     )
-
 }

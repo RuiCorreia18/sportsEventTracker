@@ -174,7 +174,7 @@ class MainActivityViewModelTest {
         val updatedState = viewModel.uiState.value as UiState.Success
         val filteredSport = updatedState.sports.first()
 
-        assertEquals(true, filteredSport.showFavoritesOnly) // Assert showFavoritesOnly updated
+        assertEquals(true, filteredSport.showFavoritesOnly)
     }
 
 }
