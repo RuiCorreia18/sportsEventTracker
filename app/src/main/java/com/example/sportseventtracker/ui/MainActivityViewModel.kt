@@ -2,11 +2,13 @@ package com.example.sportseventtracker.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.sportseventtracker.R
 import com.example.sportseventtracker.domain.GetSportsUseCase
 import com.example.sportseventtracker.ui.mapper.toUiModel
 import com.example.sportseventtracker.ui.model.MatchUiModel
 import com.example.sportseventtracker.ui.model.SportUiModel
 import com.example.sportseventtracker.ui.model.UiState
+import com.example.sportseventtracker.utils.StringProvider
 import com.example.sportseventtracker.utils.calculateTimeLeft
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -20,6 +22,7 @@ const val SECOND_IN_MILLIS = 1000L
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
     private val getSportsUseCase: GetSportsUseCase,
+    private val stringProvider: StringProvider,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState
@@ -38,7 +41,11 @@ class MainActivityViewModel @Inject constructor(
                     startCountdownUpdater()
                 }
             } catch (e: Exception) {
-                _uiState.value = UiState.Error("Failed to load sports and matches information.")
+                _uiState.value = UiState.Error(
+                    message = stringProvider.getString(R.string.request_error),
+                    exception = e,
+                    tag = "loadSportsData"
+                )
             }
         }
     }
@@ -52,7 +59,10 @@ class MainActivityViewModel @Inject constructor(
                         sport.copy(
                             matches = sport.matches.map { match ->
                                 match.copy(
-                                    timeLeft = calculateTimeLeft(match.matchStartTime)
+                                    timeLeft = calculateTimeLeft(
+                                        match.matchStartTime,
+                                        stringProvider
+                                    )
                                 )
                             }
                         )

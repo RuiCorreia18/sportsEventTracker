@@ -1,22 +1,21 @@
 package com.example.sportseventtracker.utils
 
+import com.example.sportseventtracker.R
 import java.util.concurrent.TimeUnit
 
-private const val TO_MINUTES_AND_SECONDS = 60
+private const val TIME_UNIT_DIVISOR = 60
 
-fun calculateTimeLeft(matchStartTime: Long): String {
+fun calculateTimeLeft(matchStartTime: Long, stringProvider: StringProvider): String {
     val timeLeftMillis = matchStartTime - System.currentTimeMillis()
+
     return if (timeLeftMillis > 0) {
-        formatMillisToHHMMSS(timeLeftMillis)
+        val hours = TimeUnit.MILLISECONDS.toHours(timeLeftMillis)
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(timeLeftMillis) % TIME_UNIT_DIVISOR
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(timeLeftMillis) % TIME_UNIT_DIVISOR
+
+        stringProvider.getFormattedTime(hours, minutes, seconds)
     } else {
-        "00:00:00"
+        stringProvider.getString(R.string.countdown_end_time)
     }
-}
 
-fun formatMillisToHHMMSS(millis: Long): String {
-    val hours = TimeUnit.MILLISECONDS.toHours(millis)
-    val minutes = TimeUnit.MILLISECONDS.toMinutes(millis) % TO_MINUTES_AND_SECONDS
-    val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % TO_MINUTES_AND_SECONDS
-
-    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
 }

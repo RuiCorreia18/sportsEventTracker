@@ -1,6 +1,7 @@
 package com.example.sportseventtracker.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -43,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.sportsRecyclerView.apply {
             adapter = sportsAdapter
-            //TODO check if theres better option for flickering
             itemAnimator = null
         }
 
@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     is UiState.Error -> {
+                        logError(state.tag, state.exception)
                         sportsAdapter.setItems(emptyList())
 
                         binding.loading.visibility = View.GONE
@@ -80,6 +81,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
 
+    private fun logError(tag: String, exception: Throwable) {
+        val message = exception.message ?: "No message available"
+        Log.e(tag, message, exception)
     }
 }

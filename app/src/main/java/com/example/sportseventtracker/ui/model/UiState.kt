@@ -1,8 +1,8 @@
 package com.example.sportseventtracker.ui.model
 
 sealed interface UiState {
-    object Empty: UiState
-    object Loading: UiState
+    object Empty : UiState
+    object Loading : UiState
     data class Success(val sports: List<SportUiModel>) : UiState
-    data class Error(val message: String) : UiState
+    data class Error(val message: String, val exception: Throwable, val tag: String) : UiState
 }
