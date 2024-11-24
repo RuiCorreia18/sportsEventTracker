@@ -1,14 +1,15 @@
 package com.example.sportseventtracker.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import com.example.sportseventtracker.R
 import com.example.sportseventtracker.databinding.ActivityMainBinding
-import com.example.sportseventtracker.ui.adapter.MatchesAdapter
 import com.example.sportseventtracker.ui.adapter.SportsAdapter
+import com.example.sportseventtracker.ui.model.UiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -47,8 +48,36 @@ class MainActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch {
-            viewModel.sports.collect { sports ->
-                sportsAdapter.setItems(sports)
+            viewModel.uiState.collect { state ->
+                when (state) {
+                    is UiState.Success -> {
+                        sportsAdapter.setItems(state.sports)
+
+                        binding.loading.visibility = View.GONE
+                        binding.sportsRecyclerView.visibility = View.VISIBLE
+                    }
+
+                    is UiState.Empty -> {
+                        sportsAdapter.setItems(emptyList())
+                    }
+
+                    is UiState.Error -> {
+                        sportsAdapter.setItems(emptyList())
+
+                        binding.loading.visibility = View.GONE
+                        binding.sportsRecyclerView.visibility = View.GONE
+
+                        binding.errorMessage.text = state.message
+                        binding.errorMessage.visibility = View.VISIBLE
+                    }
+
+                    UiState.Loading -> {
+                        sportsAdapter.setItems(emptyList())
+
+                        binding.loading.visibility = View.VISIBLE
+                        binding.sportsRecyclerView.visibility = View.GONE
+                    }
+                }
             }
         }
 

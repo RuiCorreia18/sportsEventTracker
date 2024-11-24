@@ -10,11 +10,13 @@ class GetSportsUseCase @Inject constructor(
         val currentTimeMillis = System.currentTimeMillis()
         val sports = repository.getSports()
 
-        return sports.filter { it.matchesList.isNotEmpty() }.map { sport ->
+        return sports.map { sport ->
             sport.copy(
-                matchesList = sport.matchesList.filter { match ->
-                    match.matchStartTime > currentTimeMillis
-                }
+                matchesList = sport.matchesList
+                    .filter { match ->
+                        match.matchStartTime > currentTimeMillis
+                    }
+                    .sortedBy { it.matchStartTime }
             )
         }
     }

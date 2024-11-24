@@ -27,6 +27,31 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:visibility="gone"
         tools:listitem="@layout/sport_item"/>
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:indeterminateTint="@color/blue"
+        app:layout_constraintTop_toBottomOf="@id/top_toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/errorMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/top_toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

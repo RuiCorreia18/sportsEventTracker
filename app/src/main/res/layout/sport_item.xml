@@ -1,55 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:background="@color/white">
 
-    <LinearLayout
-        android:id="@+id/sportHeader"
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/sportName"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@color/white"
-        android:padding="8dp">
+        android:layout_weight="1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:padding="8sp"
+        tools:text="Sport Name" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/sportName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            tools:text="Sport Name" />
+    <Switch
+        android:id="@+id/favouriteSportSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/showMatchesIcon"
+        app:layout_constraintTop_toTopOf="@+id/sportName"
+        app:layout_constraintBottom_toBottomOf="@+id/sportName"
+        android:checked="false"
+        android:thumb="@drawable/switch_thumb"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-        <Switch
-            android:id="@+id/favouriteSportSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:checked="false"
-            android:thumb="@drawable/switch_thumb"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/showMatchsIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/arrow_down"/>
-
-    </LinearLayout>
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/showMatchesIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/arrow_down"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sportName"
+        app:layout_constraintBottom_toBottomOf="@+id/sportName"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/matchesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/sportName"
+        app:layout_constraintStart_toStartOf="parent"
         android:visibility="gone"
+        android:background="@color/gray"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         tools:listitem="@layout/match_item"
         tools:itemCount="6"
         tools:spanCount="3"/>
 
-</LinearLayout>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/noMatchFoundTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/sportName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="8dp"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="No Matches Found"
+        android:background="@color/gray"
+        android:visibility="gone"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

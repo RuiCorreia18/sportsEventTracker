@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sportseventtracker.R
 import com.example.sportseventtracker.databinding.SportItemBinding
 import com.example.sportseventtracker.ui.model.MatchUiModel
 import com.example.sportseventtracker.ui.model.SportUiModel
@@ -46,6 +47,7 @@ class SportsAdapter(
     inner class VH(private val binding: SportItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         private val matchesAdapter = MatchesAdapter(onMatchFavoriteClick)
+        private var isExpanded = false
 
         fun bind(sport: SportUiModel) {
             with(binding) {
@@ -56,26 +58,55 @@ class SportsAdapter(
                     layoutManager = GridLayoutManager(root.context, 3)
                 }
 
-                val matchsToShow = if(sport.showFavoritesOnly){
+                val matchesToShow = if (sport.showFavoritesOnly) {
                     sport.matches.filter { it.isFavourite }
-                }else{
+                } else {
                     sport.matches
                 }
-                matchesAdapter.setItems(matchsToShow)
 
-                showMatchsIcon.setOnClickListener {
-                    matchesRecyclerView.visibility =
-                        if (matchesRecyclerView.visibility == View.GONE) View.VISIBLE else View.GONE
-                    showMatchsIcon.rotation += ROTATE_ANGLE
+                //Needed for when favourite switch is trigger
+                changeVisibilityRecyclerAndTextView(matchesToShow)
+
+                matchesAdapter.setItems(matchesToShow)
+
+                showMatchesIcon.setOnClickListener {
+                    isExpanded = !isExpanded
+                    changeVisibilityRecyclerAndTextView(matchesToShow)
+
+                    showMatchesIcon.rotation += ROTATE_ANGLE
                 }
 
                 favouriteSportSwitch.setOnCheckedChangeListener { _, isChecked ->
                     filterFavourite(sport.copy(showFavoritesOnly = isChecked))
+                    noMatchFoundTV.text = if (isChecked) {
+                        getString(R.string.no_favorite_matches)
+                    } else {
+                        getString(R.string.no_matches_found)
+                    }
                 }
-
             }
         }
+
+        private fun SportItemBinding.changeVisibilityRecyclerAndTextView(matchesToShow: List<MatchUiModel>) {
+            if (isExpanded) {
+                if (matchesToShow.isEmpty()) {
+                    matchesRecyclerView.visibility = View.GONE
+                    noMatchFoundTV.visibility = View.VISIBLE
+                } else {
+                    matchesRecyclerView.visibility = View.VISIBLE
+                    noMatchFoundTV.visibility = View.GONE
+                }
+            } else {
+                matchesRecyclerView.visibility = View.GONE
+                noMatchFoundTV.visibility = View.GONE
+            }
+        }
+
+        private fun getString(stringResource: Int) =
+            binding.root.context.getString(stringResource)
     }
+
+
 }
 
 class SportsDiffCallback(
