@@ -79,6 +79,12 @@ class MainActivityViewModel @Inject constructor(
                             }
                         )
                     }
+
+                    if (updatedSports == (uiState.value as UiState.Success).sports) {
+                        countdownJob?.cancel()
+                        break
+                    }
+
                     _uiState.value = UiState.Success(updatedSports)
                     delay(SECOND_IN_MILLIS)
                 }
@@ -122,7 +128,15 @@ class MainActivityViewModel @Inject constructor(
 
     private fun updateFavouriteInDatabase(sportId: String, matchId: String, isFavourite: Boolean) {
         viewModelScope.launch {
-            repository.updateFavouriteInDb(sportId, matchId, isFavourite)
+            try {
+                repository.updateFavouriteInDb(sportId, matchId, isFavourite)
+            } catch (e: Exception) {
+                _uiState.value = UiState.InternalError(
+                    message = stringProvider.getString(R.string.internal_error),
+                    exception = Throwable(),
+                    tag = "updateFavouriteInDatabase"
+                )
+            }
         }
     }
 }

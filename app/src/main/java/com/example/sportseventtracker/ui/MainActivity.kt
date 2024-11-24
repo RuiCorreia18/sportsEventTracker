@@ -11,6 +11,7 @@ import com.example.sportseventtracker.R
 import com.example.sportseventtracker.databinding.ActivityMainBinding
 import com.example.sportseventtracker.ui.adapter.SportsAdapter
 import com.example.sportseventtracker.ui.model.UiState
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -78,6 +79,16 @@ class MainActivity : AppCompatActivity() {
 
                         binding.loading.visibility = View.VISIBLE
                         binding.sportsRecyclerView.visibility = View.GONE
+                    }
+
+                    is UiState.InternalError -> {
+                        logError(state.tag, state.exception)
+
+                        Snackbar.make(
+                            binding.root,
+                            state.message,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }

@@ -6,4 +6,5 @@
     <string name="countdown_end_time">00:00:00</string>
     <string name="time_format">%02d:%02d:%02d</string>
     <string name="request_error">Failed to load sports and matches information.</string>
+    <string name="internal_error">Failed to save match as favorite.</string>
 </resources>

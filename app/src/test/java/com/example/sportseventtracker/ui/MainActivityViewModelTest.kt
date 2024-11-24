@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -69,7 +70,7 @@ class MainActivityViewModelTest {
         )
 
 
-        dispatcher.scheduler.advanceTimeBy(1000L)
+        advanceTimeBy(1000L)
 
         val uiState = viewModel.uiState.value
         assertTrue(uiState is UiState.Success)
@@ -86,7 +87,7 @@ class MainActivityViewModelTest {
             stringProvider,
             repository
         )
-        dispatcher.scheduler.advanceTimeBy(1000L)
+        advanceTimeBy(1000L)
 
         val uiState = viewModel.uiState.value
         assertTrue(uiState is UiState.Error)
@@ -129,7 +130,7 @@ class MainActivityViewModelTest {
             stringProvider,
             repository
         )
-        dispatcher.scheduler.advanceTimeBy(1000L)
+        advanceTimeBy(1000L)
 
         viewModel.setMatchFavourite(matchUiModel)
 
@@ -166,7 +167,7 @@ class MainActivityViewModelTest {
             stringProvider,
             repository
         )
-        dispatcher.scheduler.advanceTimeBy(1000L)
+        advanceTimeBy(1000L)
 
         val updatedSport = sports.first().copy(showFavoritesOnly = true)
         viewModel.filterSports(updatedSport)
@@ -175,6 +176,42 @@ class MainActivityViewModelTest {
         val filteredSport = updatedState.sports.first()
 
         assertEquals(true, filteredSport.showFavoritesOnly)
+    }
+
+    @Test
+    fun `countdown updates time correctly`() = runTest {
+        val sportDM = listOf(
+            SportDomainModel(
+                sportId = "sportId",
+                sportName = "Soccer",
+                matchesList = listOf(
+                    MatchDomainModel(
+                        matchId = "matchId",
+                        matchName = "Team A - Team B",
+                        matchStartTime = System.currentTimeMillis() + 10000L,
+                        isFavourite = false
+                    )
+                )
+            )
+        )
+        coEvery { getSportsUseCase() } returns sportDM
+        every { stringProvider.getFormattedTime(any(), any(), any()) } answers {
+            "%02d:%02d:%02d".format(args[0] as Long, args[1] as Long, args[2] as Long)
+        }
+
+        viewModel = MainActivityViewModel(
+            getSportsUseCase,
+            stringProvider,
+            repository
+        )
+
+        advanceTimeBy(1000L)
+
+        viewModel.startCountdownUpdater()
+
+        advanceTimeBy(1000L)
+
+        assertEquals("00:00:09", (viewModel.uiState.value as UiState.Success).sports[0].matches[0].timeLeft)
     }
 
 }
